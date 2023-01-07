@@ -1,0 +1,13 @@
+### Backup files
+**/*.bkp
+**/*.*~
+
+*.env
+
+### Intellij+all Patch ###
+# Ignores the whole .idea folder and all .iml files
+.idea/
+modules.xml
+*.iml
+*.ipr
+out/

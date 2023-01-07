@@ -1,0 +1,11 @@
+# ignore all hidden files
+/.*
+# apart from this file
+!.dockerignore
+/dockerfile-*
+/docker-compose*
+# documentation
+/docs
+/CODEOWNERS
+/CONTRIBUTING.*
+/README.*
