@@ -7,12 +7,12 @@ docs [building custom images](https://kasmweb.com/docs/latest/how_to/building_im
 
 ## Contents
 
-|     | Docker Image                          | Dockerhub Path |
-|-----|---------------------------------------|----------------|
-|     | serpro69/kasm-obsidian:1.12.0         |                |
-|     | serpro69/kasm-citrix-workspace:1.12.0 |                |
+|     | Docker Image                                           | Dockerhub Path                                           |
+|-----|--------------------------------------------------------|----------------------------------------------------------|
+|     | serpro69/kasm-obsidian:1.12.0                          |                                                          |
+|     | serpro69/kasm-citrix-workspace:1.12.0-ica22.12.0.12-v1 | https://hub.docker.com/r/serpro69/kasm-citrix-workspace  |
 
-Versions of images follow the release version of default kasm images. The version might also contain a build number which represents the version of the installed software package, e.g. `serpro69/kasm-obsidian:1.12.0+1.18.0` contains an installation of Obsidian 1.18.0.
+Tags of images follow the following pattern: `<core kasm image version>:<app version>:<image version>`. For exmaple `serpro69/kasm-citrix-workspace:1.12.0-ica22.12.0.12-v1` is the first version of this image that contains an installation of Citrix Workspace 22.12.0.12 which runs on kasm 1.12.0.
 
 ## Build and Run
 
