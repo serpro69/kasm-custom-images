@@ -10,37 +10,13 @@ WORKDIR $HOME
 
 ######### Customize Container Here ###########
 
-### Install sudo
-RUN echo "nameserver 8.8.8.8" > /etc/resolv.conf \
-  && apt-get install -y sudo \
-  && echo 'kasm-user ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers \
-  && rm -rf /var/lib/apt/list/*
-
 ### Install and update packages
 RUN echo "nameserver 8.8.8.8" > /etc/resolv.conf \
     && apt-get install -y apt-utils \
     && apt-get update \
     && apt-get dist-upgrade -y \
     && apt-get install -y \
-        apt-transport-https \
-        curl \
-        git \
-        vim \
-        tmux \
-        python3 \
-        python3-pip \
-        python3-gpg \
         fonts-powerline \
-        xsel \
-        xclip \
-        jq \
-        php8.1 \
-        php8.1-curl  \
-        php8.1-xml \
-        network-manager \
-        network-manager-gnome \
-        network-manager-openvpn-gnome \
-        network-manager-openconnect-gnome \
         xdg-utils # needed for obsidian
 
 WORKDIR $HOME/Downloads
@@ -49,6 +25,16 @@ RUN echo "nameserver 8.8.8.8" > /etc/resolv.conf \
     && wget "https://github.com/obsidianmd/obsidian-releases/releases/download/v${OBSIDIAN_TAG}/obsidian_${OBSIDIAN_TAG}_amd64.deb" \
     && dpkg -i "obsidian_${OBSIDIAN_TAG}_amd64.deb" \
     && rm -f "obsidian_${OBSIDIAN_TAG}_amd64.deb"
+
+COPY ./src/ubuntu/install/obsidian/custom_startup.sh $STARTUPDIR/custom_startup.sh
+RUN chmod +x $STARTUPDIR/custom_startup.sh
+RUN chmod 755 $STARTUPDIR/custom_startup.sh
+
+
+# Update the desktop environment to be optimized for a single application
+RUN cp $HOME/.config/xfce4/xfconf/single-application-xfce-perchannel-xml/* $HOME/.config/xfce4/xfconf/xfce-perchannel-xml/
+RUN cp /usr/share/extra/backgrounds/bg_kasm.png /usr/share/extra/backgrounds/bg_default.png
+RUN apt-get remove -y xfce4-panel
 
 ######### End Customizations ###########
 
