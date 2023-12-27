@@ -1,0 +1,87 @@
+ARG BASE_TAG="1.12.0"
+ARG BASE_IMAGE="core-ubuntu-jammy"
+FROM kasmweb/$BASE_IMAGE:$BASE_TAG
+USER root
+
+ENV HOME /home/kasm-default-profile
+ENV STARTUPDIR /dockerstartup
+ENV INST_SCRIPTS $STARTUPDIR/install
+WORKDIR $HOME
+
+######### Customize Container Here ###########
+
+### Install sudo
+RUN apt-get update && \
+  apt-get install -y sudo && \
+  echo 'kasm-user ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers && \
+  rm -rf /var/lib/apt/list/*
+
+### Install and update packages
+RUN apt-get update && \
+    apt-get install -y apt-utils
+
+RUN apt-get update && \
+    apt-get remove -y squid-openssl && \
+    apt-get dist-upgrade -y
+
+RUN apt-get update && \
+    apt-get install -y \
+        wget \
+        curl \
+        ca-certificates \
+        python3 \
+        python3-pip \
+        python3-gpg \
+        libqt5quick5 \
+        libqt5multimedia5 \
+        libqt5webengine5 \
+        libqt5webenginewidgets5 \
+        libqt5webenginecore5 \
+        libqt5networkauth5 \
+        libqt5svg5 \
+        libqt5websockets5 \
+        libqt5xml5 \
+        libqt5script5 \
+        libqt5scripttools5 \
+        libqt5sql5 \
+        libqt5texttospeech5
+
+# Fix missing libssl1 package in 22.04
+# check version in http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/?C=M;O=D
+RUN wget -O /tmp/libssl.deb http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.20_amd64.deb
+RUN apt-get install -y /tmp/libssl.deb
+RUN rm -f /tmp/libssl.dev
+
+RUN apt autoremove -y && apt autoclean -y
+
+WORKDIR $HOME/Downloads
+
+# Installing Packet Tracer
+COPY ./bin/Packet_Tracer821_amd64_signed.deb .
+
+RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections && \
+    echo 'PacketTracer PacketTracer_821_amd64/show-eula string ' | debconf-set-selections && \
+    echo 'PacketTracer PacketTracer_821_amd64/accept-eula boolean true' | debconf-set-selections && \
+    apt install -y ./Packet_Tracer821_amd64_signed.deb
+
+RUN rm -f ./Downloads/Packet_Tracer821_amd64_signed.deb
+
+RUN sed -i -e 's/PacketTracer/PacketTracer --no-sandbox/g' /opt/pt/packettracer
+
+### Install Firefox (needed for logging in when launching packet-tracer app)
+# https://github.com/kasmtech/workspaces-images/blob/develop/dockerfile-kasm-firefox
+COPY ./src/ubuntu/install/firefox/ $INST_SCRIPTS/firefox/
+COPY ./src/ubuntu/install/firefox/firefox.desktop $HOME/Desktop/
+RUN bash $INST_SCRIPTS/firefox/install_firefox.sh && rm -rf $INST_SCRIPTS/firefox/
+
+######### End Customizations ###########
+
+RUN chown 1000:0 $HOME
+RUN $STARTUPDIR/set_user_permission.sh $HOME
+
+ENV HOME /home/kasm-user
+WORKDIR $HOME
+RUN mkdir -p $HOME && chown -R 1000:0 $HOME
+RUN mkdir $HOME/pt && chown 1000:1000 $HOME/pt
+
+USER 1000
