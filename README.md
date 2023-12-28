@@ -9,11 +9,11 @@ docs [building custom images](https://kasmweb.com/docs/latest/how_to/building_im
 
 ## Contents
 
-|                                                   | Docker Image                                            | App Ver                  | Dockerhub Path                                             |
-|---------------------------------------------------|---------------------------------------------------------|--------------------------|------------------------------------------------------------|
-| ![](docs/assets/images/thumbnails/obsidianmd.png) | serpro69/kasm-obsidian:1.12.0-1.19.0-v1                 | `obsidian_1.1.9_amd64`   | https://hub.docker.com/r/serpro69/kasm-obsidian            |
-|                                                   | serpro69/kasm-citrix-workspace:1.12.0-ica22.12.0.12-v1  |                          | https://hub.docker.com/r/serpro69/kasm-citrix-workspace    |
-|                                                   | serpro69/kasm-cisco-packet-tracer:1.12.0-8.2.1          | `Packet_Tracer821_amd64` | https://hub.docker.com/r/serpro69/kasm-cisco-packet-tracer |
+| Docker Image                                                                                                           | App Ver                      | Dockerhub Path                                             |
+|------------------------------------------------------------------------------------------------------------------------|------------------------------|------------------------------------------------------------|
+| <img src="docs/assets/images/thumbnails/obsidian.svg" height=36/> serpro69/kasm-obsidian:1.12.0-1.19.0-v1              | `obsidian_1.1.9_amd64`       | https://hub.docker.com/r/serpro69/kasm-obsidian            |
+| <img src="docs/assets/images/thumbnails/citrix.svg" height=36/> serpro69/kasm-citrix-workspace:1.12.0-ica22.12.0.12-v1 | `icaclient_22.12.0.12_amd64` | https://hub.docker.com/r/serpro69/kasm-citrix-workspace    |
+| <img src="docs/assets/images/thumbnails/cisco.svg" height=36/> serpro69/kasm-cisco-packet-tracer:1.12.0-8.2.1          | `Packet_Tracer821_amd64`     | https://hub.docker.com/r/serpro69/kasm-cisco-packet-tracer |
 
 Tags of images follow the following pattern: `<core kasm image version>:<app version>:<image version>`. For exmaple `serpro69/kasm-citrix-workspace:1.12.0-ica22.12.0.12-v1` is the first version of this image that contains an installation of Citrix Workspace 22.12.0.12 which runs on kasm 1.12.0.
 
