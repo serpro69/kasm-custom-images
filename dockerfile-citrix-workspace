@@ -1,7 +1,9 @@
-ARG BASE_TAG="1.12.0"
+ARG BASE_TAG="1.15.0"
 ARG BASE_IMAGE="core-ubuntu-jammy"
 FROM kasmweb/$BASE_IMAGE:$BASE_TAG
 USER root
+
+ARG ICA_VER='23.11.0.82_amd64'
 
 ENV HOME /home/kasm-default-profile
 ENV STARTUPDIR /dockerstartup
@@ -11,15 +13,12 @@ WORKDIR $HOME
 ######### Customize Container Here ###########
 
 ### Install sudo
-RUN echo "nameserver 8.8.8.8" > /etc/resolv.conf \
-  && apt-get install -y sudo \
+RUN apt-get install -y sudo \
   && echo 'kasm-user ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers \
   && rm -rf /var/lib/apt/list/*
 
 ### Install and update packages
-RUN echo "nameserver 8.8.8.8" > /etc/resolv.conf \
-    && apt-get install -y apt-utils \
-    && apt-get update \
+RUN apt-get update \
     && apt-get dist-upgrade -y \
     && apt-get install -y \
         apt-transport-https \
@@ -43,25 +42,22 @@ RUN echo "nameserver 8.8.8.8" > /etc/resolv.conf \
         network-manager-openconnect-gnome
 
 # flatpak
-RUN echo "nameserver 8.8.8.8" > /etc/resolv.conf \
-  && sudo apt install -y flatpak \
+RUN sudo apt install -y flatpak \
   && flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
 ### Install icaclient
-COPY ./bin/icaclient_22.12.0.12_amd64.deb Downloads/
+COPY ./bin/icaclient_${ICA_VER}.deb Downloads/
 # https://docs.citrix.com/en-us/citrix-workspace-app-for-linux/install.html#debian-packages
-RUN echo "nameserver 8.8.8.8" > /etc/resolv.conf \
-    && export DEBIAN_FRONTEND="noninteractive" \
+RUN export DEBIAN_FRONTEND="noninteractive" \
     && printf "%s\n icaclient app_protection/install_app_protection select no" | debconf-set-selections \
-    && apt install -y -f ./Downloads/icaclient_22.12.0.12_amd64.deb \
-    && rm -rf ./Downloads/icaclient_22.12.0.12_amd64.deb
+    && apt install -y -f ./Downloads/icaclient_${ICA_VER}.deb \
+    && rm -rf ./Downloads/icaclient_${ICA_VER}.deb
 
 ### Install Firefox
 # https://github.com/kasmtech/workspaces-images/blob/develop/dockerfile-kasm-firefox
 COPY ./src/ubuntu/install/firefox/ $INST_SCRIPTS/firefox/
 COPY ./src/ubuntu/install/firefox/firefox.desktop $HOME/Desktop/
-RUN echo "nameserver 8.8.8.8" > /etc/resolv.conf \
-    && bash $INST_SCRIPTS/firefox/install_firefox.sh && rm -rf $INST_SCRIPTS/firefox/
+RUN bash $INST_SCRIPTS/firefox/install_firefox.sh && rm -rf $INST_SCRIPTS/firefox/
 
 #ssl fix for icaclient (doesn't seem to be needed since v22)
 #RUN sudo ln -s /usr/share/ca-certificates/mozilla/* /opt/Citrix/ICAClient/keystore/cacerts
