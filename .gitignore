@@ -4,6 +4,12 @@
 
 *.env
 
+### Archives
+*.zip
+*.tar
+*.bz
+*.gz
+
 ### Binaries
 *.deb
 
